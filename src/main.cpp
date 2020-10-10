@@ -70,16 +70,17 @@ void setup() {
   Serial.println("laterne-esp serial output");
   //Serial1.println("serial1 output to dfplayer");
 
-  delay(200);
+  delay(500);
   if (!mp3player.begin(Serial1)) {
     Serial.println("Fehler beim initialisieren von mp3player");
     //while(true);
   }
 
 
+  delay(500);
   mp3player.volume(15);
-  mp3player.play(1);
   mp3player.enableLoopAll();
+  //mp3player.play(1);
 
   Serial.println("mp3player initialisiert");
 
@@ -92,11 +93,11 @@ void loop() {
   leds[0] = CRGB::Blue;
   leds[1] = CRGB::Red;
   FastLED.show();
-  delay(1000);
+  delay(500);
   leds[0] = CRGB::Green;
   leds[1] = CRGB::Yellow;
   FastLED.show();
-  delay(1000);
+  delay(500);
   if (mp3player.available())
   {
     printDetail(mp3player.readType(), mp3player.read());
