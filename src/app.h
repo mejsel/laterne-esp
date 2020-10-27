@@ -18,6 +18,8 @@ public:
 
 private:
   enum State state_;
+  uint8_t brightness_percent;
+  bool increase_brightness;
 
 public:
   App();

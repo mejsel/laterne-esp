@@ -13,13 +13,14 @@ class Licht
 public:
   enum State
   {
-    Aus,
+    Weiss,
     Gruen,
     Blau,
     Rot,
     Regenbogen,
     Regenbogen_Rundlauf,
-    Kerze
+    Kerze,
+    Aus,
   };
 
 private:
@@ -35,6 +36,12 @@ public:
 
   enum State get_state() const { return state_; };
   void set_state(enum State state);
+
+  uint8_t next_effect();
+  uint8_t previous_effect();
+
+  
+
 };
 
 #endif /* LICHT_H */

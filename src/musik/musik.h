@@ -18,6 +18,7 @@ public:
 private:
   enum State state_;
   uint32_t last_millis_;
+  uint8_t volume_;
 
 public:
   Musik();

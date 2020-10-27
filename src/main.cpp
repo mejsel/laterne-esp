@@ -19,8 +19,8 @@ void setup() {
   Serial.begin(115200);
   Serial.println("(main) laterne-esp startet");
   batterie.begin(34);
-  licht.begin();
   musik.begin();
+  licht.begin();
   anzeige.begin();
   button_licht = simplebutton::ButtonPullup(2);
   button_links = simplebutton::ButtonPullup(32);

@@ -3,21 +3,22 @@
 Musik::Musik()
   : state_(Aus)
   , last_millis_(0)
+  , volume_(1)
 {
 }
 
 void Musik::begin()
 {
-  Serial1.begin(9600, SERIAL_8N1, 15, 13);
+  Serial1.begin(9600, SERIAL_8N1, 13, 15);
   if (!dfplayer.begin(Serial1)) {
     Serial.println("(musik) Fehler beim Initialisieren von mp3player");
     last_millis_ = millis();
-    state_ = Fehler;
-    return;
+    //state_ = Fehler;
+    //return;
   }
   Serial.println("mp3player initialisiert");
-  dfplayer.volume(1);
-  dfplayer.stop();
+  //dfplayer.volume(volume_);
+  //dfplayer.stop();
   //dfplayer.enableLoopAll();
   //mp3player.play(1);
   state_ = Bereit;
@@ -33,7 +34,12 @@ void Musik::update()
     }
     case Fehler:
     {
-      //if (millis() > last_millis_ + 1000)
+      if (millis() > last_millis_ + 1000)
+      {
+        Serial1.println("(musik) serial1 output");
+        last_millis_ = millis();
+      }
+
         //begin();
       break;
     }
