@@ -1,22 +1,99 @@
 #include "licht.h"
 
 Licht::Licht()
-  : state_(Idle)
+  : state_(Aus)
+  , last_millis_(0)
+  , frame_(0)
 {
 }
 
 void Licht::begin()
 {
-
+  FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds_, NUM_LEDS);
+  state_ = Regenbogen_Rundlauf;
 }
 
 void Licht::update()
 {
   switch (state_)
   {
-    case Idle:
+    case Aus:
     {
       break;
     }
+    case Gruen:
+    {
+      if (millis() > last_millis_ + 200)
+      {
+        FastLED.showColor(CRGB::Green);
+        last_millis_ = millis();
+      }
+      break;
+    }
+    case Blau:
+    {
+      if (millis() > last_millis_ + 200)
+      {
+        FastLED.showColor(CRGB::Blue);
+        last_millis_ = millis();
+      }
+      break;
+    }
+    case Rot:
+    {
+      if (millis() > last_millis_ + 200)
+      {
+        FastLED.showColor(CRGB::Red);
+        last_millis_ = millis();
+      }
+      break;
+    }
+    case Regenbogen:
+    {
+      if (millis() > last_millis_ + 20)
+      {
+        last_millis_ = millis();
+        fill_rainbow(leds_, NUM_LEDS, frame_, 1);
+        FastLED.show();
+        frame_++;
+        frame_ %= 255;
+        Serial.print("(licht) frame: ");
+        Serial.println(frame_);
+      }
+      break;
+    }
+    case Regenbogen_Rundlauf:
+    {
+      if (millis() > last_millis_ + 200)
+      {
+        last_millis_ = millis();
+        fill_rainbow(leds_, NUM_LEDS, frame_, 20);
+        FastLED.show();
+        frame_++;
+        frame_ %= 255;
+        Serial.print("(licht) frame: ");
+        Serial.println(frame_);
+      }
+      break;
+    }
+    case Kerze:
+    {
+      if (millis() > last_millis_ + 20)
+      {
+        last_millis_ = millis();
+        FastLED.show();
+        frame_++;
+        frame_ %= 255;
+      }
+      break;
+    }
   }
+}
+
+void Licht::set_state(enum State state)
+{
+  //last_millis_ = millis();
+  last_millis_ = 0;
+  frame_ = 0;
+  state_ = state;
 }

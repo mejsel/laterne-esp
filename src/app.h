@@ -2,13 +2,18 @@
 #define APP_H
 
 #include <Arduino.h>
+#include "anzeige/anzeige.h"
+#include "licht/licht.h"
+#include "musik/musik.h"
+#include <SimpleButton.h>
 
 class App
 {
 public:
   enum State
   {
-    Idle
+    Init,
+    An
   };
 
 private:
