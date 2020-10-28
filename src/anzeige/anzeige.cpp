@@ -7,6 +7,7 @@ extern Batterie batterie;
 extern simplebutton::ButtonPullup button_licht;
 extern simplebutton::ButtonPullup button_links;
 extern simplebutton::ButtonPullup button_rechts;
+extern App app;
 
 Anzeige::Anzeige()
   : state_(Splash_Screen)

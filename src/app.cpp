@@ -1,6 +1,6 @@
 #include "app.h"
 
-extern Anzeige anzeige;
+//extern Anzeige anzeige;
 extern Licht licht;
 extern Musik musik;
 extern simplebutton::ButtonPullup button_licht;
@@ -9,6 +9,7 @@ extern simplebutton::ButtonPullup button_rechts;
 
 App::App()
   : state_(Init)
+  , last_millis_(0)
   , brightness_percent(50)
   , increase_brightness(true)
 {
@@ -16,6 +17,7 @@ App::App()
 
 void App::begin()
 {
+  last_millis_ = millis();
   state_ = Init;
 }
 
@@ -26,16 +28,15 @@ void App::update()
     case Init:
     {
       state_ = An;
+      if (millis() > last_millis_ + 3000)
+      {
+        state_ = An;
+      }
       break;
     }
     case An:
     {
       // Lichtmodus //
-      if (button_licht.doubleClicked())
-      {
-        Serial.println("(app) button_licht doubleclicked");
-        licht.previous_effect();
-      }
       if (button_licht.clicked())
       {
         Serial.println("(app) button_licht clicked");
@@ -60,14 +61,10 @@ void App::update()
         Serial.print("(app) volume: ");
         Serial.println(musik.dfplayer.readVolume());
       }
-      if (button_links.doubleClicked())
-      {
-        Serial.println("(app) button_links doubleclicked");
-      }
       if (button_links.clicked())
       {
         Serial.println("(app) button_links clicked");
-        //musik.dfplayer.previous();
+        musik.dfplayer.play();
       }
 
       // vor / lauter //
@@ -78,14 +75,10 @@ void App::update()
         Serial.print("(app) volume: ");
         Serial.println(musik.dfplayer.readVolume());
       }
-      if (button_rechts.doubleClicked())
-      {
-        Serial.println("(app) button_rechts doubleclicked");
-      }
       if (button_rechts.clicked())
       {
         Serial.println("(app) button_rechts clicked");
-        //musik.dfplayer.next();
+        musik.dfplayer.next();
       }
       break;
     }
