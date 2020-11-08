@@ -13,16 +13,19 @@ public:
   enum State
   {
     Init,
-    An,
+    Normalbetrieb,
     Lautstaerke_Plus,
     Lautstaerke_Minus,
+    Helligkeit_Plus,
+    Helligkeit_Minus
   };
 
 private:
   enum State state_;
   uint32_t last_millis_;
-  uint8_t brightness_percent;
-  bool increase_brightness;
+  bool helligkeit_zuletzt_erhoeht;
+  bool lautstaerke_zuletzt_erhoeht;
+  bool gestartet;
 
 public:
   App();

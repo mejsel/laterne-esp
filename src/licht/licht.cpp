@@ -10,16 +10,27 @@ Licht::Licht()
 void Licht::begin()
 {
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds_, NUM_LEDS);
-  state_ = Regenbogen_Rundlauf;
+  FastLED.setBrightness(100);
+  //state_ = Regenbogen_Rundlauf;
 }
 
 void Licht::update()
 {
   switch (state_)
   {
-    case Weiss:
+    case Aus:
     {
       if (millis() > last_millis_ + 200)
+      {
+        FastLED.clear();
+        FastLED.show();
+        last_millis_ = millis();
+      }
+      break;
+    }
+    case Weiss:
+    {
+      if (millis() > last_millis_ + 20)
       {
         FastLED.showColor(CRGB::White);
         last_millis_ = millis();
@@ -28,7 +39,7 @@ void Licht::update()
     }
     case Gruen:
     {
-      if (millis() > last_millis_ + 200)
+      if (millis() > last_millis_ + 20)
       {
         FastLED.showColor(CRGB::Green);
         last_millis_ = millis();
@@ -37,7 +48,7 @@ void Licht::update()
     }
     case Blau:
     {
-      if (millis() > last_millis_ + 200)
+      if (millis() > last_millis_ + 20)
       {
         FastLED.showColor(CRGB::Blue);
         last_millis_ = millis();
@@ -46,7 +57,7 @@ void Licht::update()
     }
     case Rot:
     {
-      if (millis() > last_millis_ + 200)
+      if (millis() > last_millis_ + 20)
       {
         FastLED.showColor(CRGB::Red);
         last_millis_ = millis();
@@ -86,19 +97,10 @@ void Licht::update()
       if (millis() > last_millis_ + 20)
       {
         last_millis_ = millis();
-        FastLED.show();
+        FastLED.showColor(CRGB::OrangeRed);
+        //FastLED.show();
         frame_++;
         frame_ %= 255;
-      }
-      break;
-    }
-    case Aus:
-    {
-      if (millis() > last_millis_ + 200)
-      {
-        FastLED.clear();
-        FastLED.show();
-        last_millis_ = millis();
       }
       break;
     }
@@ -115,7 +117,7 @@ void Licht::set_state(enum State state)
 
 uint8_t Licht::next_effect()
 {
-  if (state_ == Aus)
+  if (state_+1 == Ende)
     set_state((enum State) 0);
   else
     set_state((enum State) (state_+1));
@@ -125,7 +127,7 @@ uint8_t Licht::next_effect()
 uint8_t Licht::previous_effect()
 {
   if ((int32_t) state_ == 0)
-    set_state(Aus);
+    set_state((enum State)(Ende-1));
   else
     set_state((enum State) (state_-1));
   return (int8_t) get_state();

@@ -3,7 +3,7 @@
 Musik::Musik()
   : state_(Aus)
   , last_millis_(0)
-  , volume_(1)
+  , volume_(10)
 {
 }
 
@@ -17,7 +17,7 @@ void Musik::begin()
     //return;
   }
   Serial.println("mp3player initialisiert");
-  //dfplayer.volume(volume_);
+  dfplayer.volume(volume_);
   //dfplayer.stop();
   //dfplayer.enableLoopAll();
   //mp3player.play(1);
@@ -105,4 +105,24 @@ void Musik::print_detail(uint8_t type, int value){
     default:
       break;
   }
+}
+
+void Musik::set_volume(uint8_t volume)
+{
+  if (volume > 30)
+    volume = 30;
+  dfplayer.volume(volume);
+  volume_ = volume;
+}
+
+void Musik::inc_volume()
+{
+  if (volume_<30)
+    set_volume(volume_+1);
+}
+
+void Musik::dec_volume()
+{
+  if (volume_>0)
+    set_volume(volume_-1);
 }

@@ -31,6 +31,17 @@ void Anzeige::begin()
 
 void Anzeige::update()
 {
+  // if (app_state_nr_ != (uint32_t)app.get_state() )
+  // {
+  //   delay_millis_ = millis();
+  //   app_state_nr_ = (uint32_t)app.get_state();
+  // }
+  // if ((app.get_state() == App::Lautstaerke_Minus || app.get_state() == App::Lautstaerke_Plus)
+  //       && millis() > delay_millis_ + 1000)
+  // {
+
+  // }
+
   switch (state_)
   {
     case Splash_Screen:
@@ -80,11 +91,6 @@ void Anzeige::update_splash_screen()
       }
       frame_ = 2;
     }
-    else if (millis() > last_millis_ + 5000)
-    {
-      draw_main_screen();
-      state_ = Main_Screen;
-    }
 }
 
 void Anzeige::draw_main_screen()
@@ -92,30 +98,47 @@ void Anzeige::draw_main_screen()
   state_ = Main_Screen;
   Serial.println("(anzeige) draw main screen");
   fillScreen(TFT_BLACK);
+  //draw_lautstaerke_balken(5);
+  //draw_helligkeits_balken(100);
   setTextFont(4);
   setTextColor(TFT_ORANGE, TFT_BLACK);
-  setTextDatum(MR_DATUM);
-  drawString(F("BAT_ADC: "), 150, 20);
-  drawString(F("BAT_FILT: "), 150, 40);
-  drawString(F("BAT_PROZ: "), 150, 60);
-  setTextDatum(ML_DATUM);
+  setTextDatum(TC_DATUM);
+  drawString(F("Lichteffekt 3/7"), width()/2, 0);
+  //fillRoundRect(width()/2-50, 0+27, 2*50, 10, 5, TFT_GREEN);
+  // drawString(F("Lied 1/5 - spielt"), width()/2, 48);
+  drawString(F("Lautstaerke"), width()/2, 48);
+  //fillRoundRect(width()/2-30, 48+27, 2*30, 10, 5, TFT_RED);
+  drawString(F("Batterie"), width()/2, 96);
+  //fillRoundRect(width()/2-100, 96+27, 2*100, 10, 5, TFT_DARKGREY);
 }
 
 void Anzeige::update_main_screen()
 {
-  if (batterie.get_ticks() != batterie_ticks_)
+  if (batterie.get_prozent()/10 != batterie_wert_)
   {
-    draw_batterie();
-    batterie_ticks_ = batterie.get_ticks();
+    fillRect(width()/2-(batterie_breite_/2), 96+27, batterie_breite_, 10, TFT_BLACK);
+    batterie_wert_ = batterie.get_prozent()/10;
+    batterie_breite_ = map(batterie_wert_, 0, 10, 0, width());
+    fillRoundRect(width()/2-(batterie_breite_/2), 96+27, batterie_breite_, 10, 5, TFT_DARKGREY);
   }
-}
-
-void Anzeige::draw_batterie()
-{
-  sprintf(batterie_str_, "%i", batterie.get_adc());
-  drawString(batterie_str_, 150, 20);
-  sprintf(batterie_str_, "%i", batterie.get_adc_filtered());
-  drawString(batterie_str_, 150, 40);
-  sprintf(batterie_str_, "%i %%", batterie.get_prozent());
-  drawString(batterie_str_, 150, 60);
+  if (musik.get_volume() != volume_)
+  {
+    fillRect(width()/2-(volume_breite_/2), 48+27, volume_breite_, 10, TFT_BLACK);
+    volume_ = musik.get_volume();
+    volume_breite_ = map(volume_, 0, 30, 0, width());
+    fillRoundRect(width()/2-(volume_breite_/2), 48+27, volume_breite_, 10, 5, TFT_RED);
+  }
+  if ((uint32_t)licht.get_state() != licht_state_nr_)
+  {
+    licht_state_nr_ = (uint32_t)licht.get_state();
+    snprintf(lichteffekt_str_, 30, "   Lichteffekt %u/%u   ", licht_state_nr_, (uint32_t)Licht::Ende);
+    drawString(lichteffekt_str_, width()/2, 0);
+  }
+  if (FastLED.getBrightness() != helligkeit_)
+  {
+    fillRect(width()/2-(helligkeit_breite_/2), 0+27, helligkeit_breite_, 10, TFT_BLACK);
+    helligkeit_ = FastLED.getBrightness();
+    helligkeit_breite_ = map(helligkeit_, 0, 255, 0, width());
+    fillRoundRect(width()/2-(helligkeit_breite_/2), 0+27, helligkeit_breite_, 10, 5, TFT_DARKGREEN);
+  }
 }

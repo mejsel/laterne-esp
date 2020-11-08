@@ -13,6 +13,7 @@ class Licht
 public:
   enum State
   {
+    Aus,
     Weiss,
     Gruen,
     Blau,
@@ -20,7 +21,7 @@ public:
     Regenbogen,
     Regenbogen_Rundlauf,
     Kerze,
-    Aus,
+    Ende
   };
 
 private:
